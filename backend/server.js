@@ -1,9 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors');
 const bodyParser = require('body-parser')
 
 const app = express()
 app.use(bodyParser.json());
+app.use(cors());
 
 mongoose.connect('mongodb://localhost:27017/registration')
 
@@ -15,18 +17,14 @@ const UserSchema = new mongoose.Schema({
 
 const UserModel = mongoose.model("users", UserSchema)
 
-app.post('http://localhost:3000/api/register', (req, res) => {
+app.post('/api/register', (req, res) => {
     const { name, email, password } = req.body;
 
     const newUser = new UserModel({ name, email, password });
 
-    newUser.save((err) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to register user.' });
-        } else {
-            res.status(200).json({ message: 'User registered successfully.' });
-        }
-    });
+    newUser.save()
+    .then((err) => {console.log(err);})
+    .catch(err => console.log(err))
 });
 
 app.listen(5000, ()=> {

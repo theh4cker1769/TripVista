@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from 'axios';
 
 export const Register = (props) => {
     const [formData, setFormData] = useState({
@@ -15,22 +16,18 @@ export const Register = (props) => {
         }));
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch('/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+        axios.post('http://localhost:5000/api/register', formData)
+            .then((response) => {
+                // Handle successful registration
+                console.log('Registration successful!', response.data);
+            })
+            .catch((error) => {
+                // Handle registration error
+                console.error('Registration failed:', error);
             });
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.error('Error registering user:', error);
-        }
-        alert("hello");
 
     };
 
