@@ -7,7 +7,7 @@ const app = express()
 app.use(bodyParser.json());
 app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/registration')
+mongoose.connect('mongodb+srv://theh4cker:MongoDB%40123@cluster0.esb8t.mongodb.net/TripVista')
 
 const UserSchema = new mongoose.Schema({
     name: { type: String, require: true },

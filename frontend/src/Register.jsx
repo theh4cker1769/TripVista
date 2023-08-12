@@ -19,7 +19,7 @@ export const Register = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5000/api/register', formData)
+        axios.post('/api/register', formData)
             .then((response) => {
                 // Handle successful registration
                 console.log('Registration successful!', response.data);
