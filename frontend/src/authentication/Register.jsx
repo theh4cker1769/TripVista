@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import { NavLink } from "react-router-dom";
 
 export const Register = (props) => {
     const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ export const Register = (props) => {
 
                 <button type="submit">Register</button>
             </form>
-            <button className="link-btn" onClick={() => props.onFormSwitch('login')}>Already have an account? Login here.</button>
+            <button className="link-btn" ><NavLink to={'/'}> Already have an account? Login here. </NavLink></button>
         </div>
     )
 }
