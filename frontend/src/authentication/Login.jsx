@@ -9,19 +9,17 @@ export const Login = (props) => {
 
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('/api/login', { email, password });
-            if (response.status === 200) {
-                navigate("/home");
-            } else {
-                alert('Wrong')
-
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        // Send username and password to the backend for verification
+        const response = fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+        const data = response.json();
+        // Store the JWT token in localStorage
+        localStorage.setItem('token', data.token);
     }
 
     const loginEmailEvent = (e) => {
