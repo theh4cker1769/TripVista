@@ -1,57 +1,90 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const mongodb = require('mongodb')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
-const SECRET_KEY = 'ahvduafvuiaruiffua56126e89eecjfweo9vk3'
 // Middleware
 app.use(bodyParser.json());
+app.use(cors());
 
-// Mock user data (replace with database in a real app)
-const users = [
-  { id: 1, username: 'user1', password: 'password1', email: 'user1@example.com' },
-  { id: 2, username: 'user2', password: 'password2', email: 'user2@example.com' },
-];
+const SECRET_KEY = 'ahvduafvuiaruiffua56126e89eecjfweo9vk3'
 
-// Generate JWT token
-function generateToken(user) {
-  return jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
-}
+const client = new mongodb.MongoClient("mongodb+srv://theh4cker:MongoDB%40123@cluster0.esb8t.mongodb.net");
 
-// Authentication middleware
-function authenticateToken(req, res, next) {
-  const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-  if (token == null) return res.sendStatus(401);
+const db = client.db("TripVista");
+const users = db.collection("users");
 
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
+// const UserSchema = new mongoose.Schema({
+//   name: { type: String, require: true },
+//   email: { type: String, require: true },
+//   password: { type: String, require: true },
+//   foodPreference: { type: String }
+// })
 
-// Login endpoint
-app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
-  if (user) {
-    const token = generateToken(user);
-    res.json({ token });
-  } else {
-    res.status(401).json({ message: 'Invalid credentials' });
+// const users = db.collection("users");
+
+// const users = mongoose.model("users", UserSchema)
+
+// const users = [
+//   { id: 1, username: 'user1', password: 'password1', email: 'user1@example.com' },
+//   { id: 2, username: 'user2', password: 'password2', email: 'user2@example.com' },
+//   { id: 2, username: 'user2', password: '1234567890', email: 'test@gmail.com' },
+// ];
+
+// app.post('/api/register', (req, res) => {
+//   const { name, email, password } = req.body;
+
+//   const newUser = new users({ name, email, password });
+
+//   newUser.save()
+//       .then((err) => { console.log(err); })
+//       .catch(err => console.log(err))
+// });
+
+app.post('/api/login', async (req, res) => {
+  
+  try {
+    
+    const { email, password } = req.body;
+    
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+      const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });
+      console.log('userEmail111', user)
+
+      res.json({ token });
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred' });
   }
 });
 
 // Profile endpoint
-app.get('/api/profile', authenticateToken, (req, res) => {
-  const user = users.find(u => u.id === req.user.id);
-  if (user) {
-    res.json({ username: user.username, email: user.email });
-  } else {
-    res.status(404).json({ message: 'User not found' });
+app.get('/api/profile', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const userEmail = decoded.userId;
+    console.log('userEmail', decoded)
+
+    const user = users.find(u => u.email === userEmail);
+    if (user) {
+      res.json({ name: user.name, email: user.email });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred' });
   }
 });
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 
 const Home = () => {
 
@@ -19,7 +18,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Welcome, {profileData.username}!</h1>
+      <h1>Welcome, {profileData.name}!</h1>
       <p>Email: {profileData.email}</p>
       {/* Render other profile data */}
     </div>
