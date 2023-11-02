@@ -33,14 +33,13 @@ const Home = (props) => {
           <p>Username: {profileData.name}</p>
           <p>Email: {profileData.email}</p>
           <br/>
-          
+          <button onClick={openProject}>Explore</button>
           {/* Display other profile data fields */}
 
         </div>
       ) : (
         <>
           <p>Loading or unauthorized</p>
-          <button onClick={openProject}>Explore</button>
         </>
       )}
 
