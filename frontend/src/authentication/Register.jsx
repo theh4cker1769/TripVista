@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from 'axios';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export const Register = (props) => {
+
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -18,18 +20,16 @@ export const Register = (props) => {
     };
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('/api/register', formData)
-            .then((response) => {
-                // Handle successful registration
+        axios.post('/api/register', formData).then((response) => {
                 console.log('Registration successful!', response.data);
             })
             .catch((error) => {
-                // Handle registration error
                 console.error('Registration failed:', error);
             });
-
+            
+        navigate('/')
     };
 
     return (

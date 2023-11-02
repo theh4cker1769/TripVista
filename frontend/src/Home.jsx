@@ -1,26 +1,42 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 
 const Home = () => {
 
-  const [profileData, setProfileData] = useState({});
+  const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    // Fetch profile data using the stored JWT token
-    const token = localStorage.getItem('token');
-    fetch('/api/profile', {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(response => response.json())
-      .then(data => setProfileData(data))
-      .catch(error => console.error('Error fetching profile data', error));
+    const userId = localStorage.getItem('userID');
+
+    if (userId) {
+      axios.get(`/api/profile/${userId}`)
+        .then((response) => {
+          setProfileData(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching profile data', error);
+        });
+    } else {
+      console.log('dont know')
+    }
   }, []);
 
   return (
     <div>
-      <h1>Welcome, {profileData.name}!</h1>
-      <p>Email: {profileData.email}</p>
-      {/* Render other profile data */}
+      <h2>User Profile</h2>
+      {profileData ? (
+        <div>
+          <p>Username: {profileData.name}</p>
+          <p>Email: {profileData.email}</p>
+          {/* Display other profile data fields */}
+        </div>
+      ) : (
+        <p>Loading or unauthorized</p>
+      )}
+
+
+      
+
     </div>
   )
 }

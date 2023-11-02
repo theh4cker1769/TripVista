@@ -15,8 +15,7 @@ mongoose.connect('mongodb+srv://theh4cker:MongoDB%40123@cluster0.esb8t.mongodb.n
 const UserSchema = new mongoose.Schema({
     name: { type: String, require: true },
     email: { type: String, require: true },
-    password: { type: String, require: true },
-    foodPreference: { type: String }
+    password: { type: String, require: true }
 })
 
 
@@ -34,36 +33,38 @@ app.post('/api/register', (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
+    const { email, password } = req.body;
     const user = await UserModel.findOne({ email });
-    const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' });
-    if (user) {
-        if (password === user.password) {
-            res.status(200).send({ token });
-        } else {
-            res.status(401).json({ message: 'Invalid credentials' });
-        }
+
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+    console.log('helooo', user._id)
+    if (password == user.password) {
+        res.status(200).send(user._id);
     } else {
-        res.status(401).json({ message: 'User not found' });
+        res.status(401).send('Invalid password');
     }
 
 })
 
-// app.post('/api/profile', async (req, res) => {
-//     const token = req.headers['authorization'].split('Bearer ')[1];
-//     try {
-//         const decodedToken = jwt.verify(token, SECRET_KEY);
-//         const emailUser = decodedToken.email
-//     } catch (error) {
-//         res.status(401).send('Invalid token');
-//         return;
-//     }
+app.get('/api/profile/:userID', async (req, res) => {
+    const userID = req.params.userID;
 
-    
-//     res.status(200).send(user);
-// })
+    const user = await UserModel.findById(userID).exec();
+
+    console.log('tuyii', user)
+
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+
+    res.json({
+        name: user.name,
+        email: user.email
+    });
+
+});
 
 app.listen(5000, () => {
     console.log("On Port 5000!!")
