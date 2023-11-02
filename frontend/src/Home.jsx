@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 
-const Home = () => {
+const Home = (props) => {
 
   const [profileData, setProfileData] = useState(null);
 
@@ -21,6 +21,10 @@ const Home = () => {
     }
   }, []);
 
+  const openProject = () => {
+    window.open("https://theh4cker1769.github.io/TripVistaLanding/", "_blank");
+  };
+
   return (
     <div>
       <h2>User Profile</h2>
@@ -28,14 +32,20 @@ const Home = () => {
         <div>
           <p>Username: {profileData.name}</p>
           <p>Email: {profileData.email}</p>
+          <br/>
+          
           {/* Display other profile data fields */}
+
         </div>
       ) : (
-        <p>Loading or unauthorized</p>
+        <>
+          <p>Loading or unauthorized</p>
+          <button onClick={openProject}>Explore</button>
+        </>
       )}
 
 
-      
+
 
     </div>
   )
