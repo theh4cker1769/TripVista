@@ -53,7 +53,6 @@ app.get('/api/profile/:userID', async (req, res) => {
 
     const user = await UserModel.findById(userID).exec();
 
-    console.log('tuyii', user)
 
     if (!user) {
         return res.status(404).send('User not found');

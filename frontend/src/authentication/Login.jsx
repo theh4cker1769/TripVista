@@ -17,14 +17,14 @@ export const Login = (props) => {
             if (response.status === 200) {
                 setLoggedIn(true);
                 console.log('jaxcjaiocias', response.data)
-                localStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('loggedIn', true);
                 localStorage.setItem('userID', response.data)
             }
         } catch (error) {
             console.error('Login failed', error);
         }
         
-        navigate('/home')
+        navigate('/')
     };
 
     return (

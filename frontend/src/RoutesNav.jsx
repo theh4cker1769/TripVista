@@ -8,8 +8,8 @@ import './App.css';
 const RoutesNav = () => {
     return (
         <Routes>
-            <Route exact path="/" element={<Login />} />
-            <Route exact path="home" element={<Home />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/" element={<Home />} />
             <Route path="register" element={<Register />} />
         </Routes>
     )
